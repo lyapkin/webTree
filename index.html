@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tree</title>
+</head>
+<body>
+
+<script>
+const data = fetchData();
+
+const tree = data.services
+                    .sort(sortServices)
+                    .reduce(toHtmlTree, {null: createUlElement()});
+
+document.body.append(tree[null]);
+
+
+
+
+function sortServices(a, b) {
+    if (a.head === b.head) return a.sorthead - b.sorthead;
+    return a.head - b.head;
+}
+
+function toHtmlTree(resultObj, service) {
+    const element = createLiElement(service);
+
+    if (service.node === 1) {
+        resultObj[service.id] = createUlElement();
+        element.append(resultObj[service.id]);
+    }
+    resultObj[service.head].append(element);
+
+    return resultObj;
+}
+
+function createUlElement() {
+    const ul = document.createElement("ul");
+    ul.setAttribute("style", "list-style-type: none");
+    return ul;
+}
+
+function createLiElement(service) {
+    const li = document.createElement("li");
+    const span = document.createElement("span");
+
+    span.setAttribute("style", "cursor: pointer");
+    span.prepend(getName(service));
+    li.prepend(span);
+    if (service.node === 1) {
+        li.addEventListener("click", changeSublistVisibility);
+    }
+    
+    return li;
+}
+
+function getName(service) {
+    return (service.node === 1 && service.name) || `${service.name} (${service.price})`;
+}
+
+function changeSublistVisibility(e) {
+    if (e.currentTarget.firstElementChild !== e.target) return;
+
+    const ul = e.currentTarget.querySelector("ul");
+    ul.hidden = !ul.hidden;
+}
+
+function fetchData() {
+    return {
+        "services": [
+            {
+                "id": 1,
+                "head": null,
+                "name": "Проф.осмотр",
+                "node": 0,
+                "price": 100.0,
+                "sorthead": 20
+            },
+            {
+                "id": 2,
+                "head": null,
+                "name": "Хирургия",
+                "node": 1,
+                "price": 0.0,
+                "sorthead": 10
+            },
+            {
+                "id": 3,
+                "head": 2,
+                "name": "Удаление зубов",
+                "node": 1,
+                "price": 0.0,
+                "sorthead": 10
+            },
+            {
+                "id": 4,
+                "head": 3,
+                "name": "Удаление зуба",
+                "node": 0,
+                "price": 800.0,
+                "sorthead": 10
+            },
+            {
+                "id": 5,
+                "head": 3,
+                "name": "Удаление 8ого зуба",
+                "node": 0,
+                "price": 1000.0,
+                "sorthead": 30
+            },
+            {
+                "id": 6,
+                "head": 3,
+                "name": "Удаление осколка зуба",
+                "node": 0,
+                "price": 2000.0,
+                "sorthead": 20
+            },
+            {
+                "id": 7,
+                "head": 2,
+                "name": "Хирургические вмешательство",
+                "node": 0,
+                "price": 200.0,
+                "sorthead": 10
+            },
+            {
+                "id": 8,
+                "head": 2,
+                "name": "Имплантация зубов",
+                "node": 1,
+                "price": 0.0,
+                "sorthead": 20
+            },
+            {
+                "id": 9,
+                "head": 8,
+                "name": "Коронка",
+                "node": 0,
+                "price": 3000.0,
+                "sorthead": 10
+            },
+            {
+                "id": 10,
+                "head": 8,
+                "name": "Слепок челюсти",
+                "node": 0,
+                "price": 500.0,
+                "sorthead": 20
+            }
+        ]
+    }
+}
+</script>
+</body>
+</html>
